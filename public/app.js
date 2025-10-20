@@ -55,18 +55,29 @@ window.addEventListener('scroll', () => {
   scrollBtn.classList.toggle('hidden', !show);
 });
 
-function bindUploadPreview(inputId, previewId){
+function bindUploadPreview(inputId, previewId, textId){
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
+  const text = document.getElementById(textId);
+
   input.addEventListener('change', () => {
     const f = input.files?.[0];
-    if(!f){ preview.innerHTML = ''; return; }
+    if(!f){
+      preview.innerHTML = '';
+      text.textContent = 'Choose image';
+      input.parentElement.classList.remove('uploaded');
+      return;
+    }
+
     const url = URL.createObjectURL(f);
     preview.innerHTML = `<img src="${url}" alt="preview" />`;
+    text.textContent = '✅ Uploaded';
+    input.parentElement.classList.add('uploaded');
   });
 }
-bindUploadPreview('logoUpload','logoPreview');
-bindUploadPreview('logoHUpload','logoHPreview');
+
+bindUploadPreview('logoUpload','logoPreview','logoText');
+bindUploadPreview('logoHUpload','logoHPreview','logoHText');
 
 const wait = ms => new Promise(r => setTimeout(r, ms));
 

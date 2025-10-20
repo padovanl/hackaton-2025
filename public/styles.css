@@ -429,3 +429,37 @@ body {
   outline: 3px solid var(--red);
   box-shadow: 0 0 10px rgba(237, 28, 36, 0.3);
 }
+.file-drop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fff;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s ease;
+  text-align: center;
+}
+.file-drop:hover {
+  border-color: var(--red);
+  color: var(--red);
+  box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.1);
+}
+.file-drop:active {
+  transform: scale(0.98);
+}
+.file-icon {
+  font-size: 1.2em;
+}
+.file-text {
+  font-size: 0.95em;
+}
+.file-drop.uploaded {
+  border-color: var(--red);
+  background: rgba(237, 28, 36, 0.05);
+  color: var(--red-dark);
+}

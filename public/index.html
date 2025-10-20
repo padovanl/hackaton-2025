@@ -16,17 +16,25 @@
       <h2>Settings</h2>
 
       <div class="form-grid">
-        <div class="form-row">
-          <label>Logo (upload)</label>
-          <input type="file" id="logoUpload" accept="image/*" />
-          <div class="thumb" id="logoPreview"></div>
-        </div>
+      <div class="form-row">
+        <label>Logo</label>
+        <label class="file-drop" for="logoUpload">
+          <span class="file-icon">🖼️</span>
+          <span class="file-text" id="logoText">Choose image</span>
+          <input type="file" id="logoUpload" accept="image/*" hidden />
+        </label>
+        <div class="thumb" id="logoPreview"></div>
+      </div>
 
-        <div class="form-row">
-          <label>Horizontal logo (upload)</label>
-          <input type="file" id="logoHUpload" accept="image/*" />
-          <div class="thumb" id="logoHPreview"></div>
-        </div>
+      <div class="form-row">
+        <label>Logo orizzontale</label>
+        <label class="file-drop" for="logoHUpload">
+          <span class="file-icon">🖼️</span>
+          <span class="file-text" id="logoHText">Choose image</span>
+          <input type="file" id="logoHUpload" accept="image/*" hidden />
+        </label>
+        <div class="thumb" id="logoHPreview"></div>
+      </div>
 
         <div class="form-row">
           <label>Holiday name</label>

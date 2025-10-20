@@ -35,7 +35,6 @@ function closeLightbox(){
 lightbox?.addEventListener('click', closeLightbox);
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
 
-// upload preview
 function bindUploadPreview(inputId, previewId){
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
@@ -54,11 +53,7 @@ function radioValue(name){
   return el ? el.value : '';
 }
 
-// funzione di attesa random 10–20s
-const waitRandom = async () => {
-  const ms = 10000 + Math.random() * 10000;
-  return new Promise(r => setTimeout(r, ms));
-};
+const wait = ms => new Promise(r => setTimeout(r, ms));
 
 function buildRow(categoryKey, label, images){
   const row = document.createElement('div');
@@ -74,17 +69,22 @@ function buildRow(categoryKey, label, images){
   grid.className = 'grid';
   row.appendChild(grid);
 
-  images.forEach((src, idx) => {
+  // Aggiungi le immagini con effetto progressivo
+  images.forEach(async (src, idx) => {
     const card = document.createElement('div');
-    card.className = 'card-img';
+    card.className = 'card-img loading';
+    const badge = document.createElement('div');
+    badge.className = 'badge';
+    badge.textContent = `#${idx+1}`;
+    grid.appendChild(card);
+
+    // Aspetta 5 secondi prima di mostrare
+    await wait(5000);
+
     const img = document.createElement('img');
     img.src = src;
     img.alt = `${label} ${idx+1}`;
     img.addEventListener('click', () => openLightbox(img.src));
-
-    const badge = document.createElement('div');
-    badge.className = 'badge';
-    badge.textContent = `#${idx+1}`;
 
     const x = document.createElement('div');
     x.className = 'btn-x';
@@ -116,11 +116,11 @@ function buildRow(categoryKey, label, images){
       radio.value = newSrc;
     });
 
+    card.classList.remove('loading');
     card.appendChild(img);
     card.appendChild(badge);
     card.appendChild(x);
     card.appendChild(selector);
-    grid.appendChild(card);
   });
 
   return row;
@@ -139,8 +139,7 @@ async function regenerateImage(cardEl, categoryKey){
     });
     const data = await res.json();
 
-    // Simula caricamento lento 10–20s
-    await waitRandom();
+    await wait(5000); // 5 secondi di simulazione
 
     if (!data?.image) {
       alert('Non ci sono altre immagini disponibili in questa cartella.');
@@ -187,6 +186,8 @@ async function generate(){
   generateBtn.disabled = true;
   generateBtn.textContent = 'Generazione in corso...';
   generateBtn.classList.add('is-loading');
+  rowsContainer.innerHTML = '';
+  resultsSection.classList.remove('hidden');
 
   const payload = {
     festaName: festaNameInput.value.trim(),
@@ -202,9 +203,6 @@ async function generate(){
     });
     const data = await res.json();
 
-    // Simula attesa 10–20 s
-    await waitRandom();
-
     available = {
       logo: data.images.logo || [],
       logoHorizontal: data.images.logoHorizontal || [],
@@ -214,17 +212,18 @@ async function generate(){
 
     selected = { logo:null, logoHorizontal:null, gridBg:null, touchBg:null };
     selectedColor = null;
-
-    rowsContainer.innerHTML = '';
-    CATS.forEach(cat => rowsContainer.appendChild(
-      buildRow(cat.key, cat.label, available[cat.key])
-    ));
-
     colors = data.colors || [];
-    renderColors(colors);
 
-    resultsSection.classList.remove('hidden');
+    // Popola progressivamente le righe
+    for (const cat of CATS){
+      const row = buildRow(cat.key, cat.label, available[cat.key]);
+      rowsContainer.appendChild(row);
+      await wait(5000 * (available[cat.key]?.length || 1)); // ogni immagine 5s
+    }
+
+    renderColors(colors);
     refreshDownloadButton();
+
   } catch(e){
     console.error(e); alert('Errore durante la generazione');
   } finally {

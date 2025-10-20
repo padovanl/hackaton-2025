@@ -17,7 +17,7 @@
 
       <div class="form-grid">
       <div class="form-row">
-        <label>Logo</label>
+        <label>Logo <span class="required-mark">*</span></label>
         <label class="file-drop" for="logoUpload">
           <span class="file-icon">🖼️</span>
           <span class="file-text" id="logoText">Choose image</span>
@@ -27,7 +27,7 @@
       </div>
 
       <div class="form-row">
-        <label>Logo orizzontale</label>
+        <label>Horizontal logo <span class="required-mark">*</span></label>
         <label class="file-drop" for="logoHUpload">
           <span class="file-icon">🖼️</span>
           <span class="file-text" id="logoHText">Choose image</span>
@@ -36,10 +36,10 @@
         <div class="thumb" id="logoHPreview"></div>
       </div>
 
-        <div class="form-row">
-          <label>Holiday name</label>
-          <input type="text" id="festaName" placeholder="e.g., Tech Christmas 2025" />
-        </div>
+      <div class="form-row required">
+        <label>Holiday name <span class="required-mark">*</span></label>
+        <input type="text" id="festaName" placeholder="e.g. QAMF Winter Hackathon" required />
+      </div>
 
         <div class="form-row">
           <label>Description (optional)</label>
@@ -60,8 +60,8 @@
         <div class="form-row">
           <label>Variant</label>
           <div class="radios">
-            <label><input type="radio" name="variant" value="minimal" checked /> Minimal</label>
-            <label><input type="radio" name="variant" value="illustrativo" /> Illustrative</label>
+            <label><input type="radio" name="variant" value="minimal" checked /><span>Minimal</span></label>
+            <label><input type="radio" name="variant" value="illustrativo" /><span>Illustrative</span></label>
           </div>
         </div>
       </div>

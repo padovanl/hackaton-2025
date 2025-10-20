@@ -85,7 +85,21 @@ function bindUploadPreview(inputId, previewId, textId){
 
 bindUploadPreview('logoUpload','logoPreview','logoText');
 bindUploadPreview('logoHUpload','logoHPreview','logoHText');
-
+document.querySelectorAll('input[required]').forEach(el => {
+  el.addEventListener('input', () => {
+    if (el.value.trim() !== '') {
+      clearFieldError('#' + el.id);
+    }
+  });
+});
+['logoUpload','logoHUpload'].forEach(id => {
+  const el = document.getElementById(id);
+  el?.addEventListener('change', () => {
+    if (el.files && el.files.length > 0) {
+      clearFieldError('#' + id);
+    }
+  });
+});
 // pulisci errori mentre si digita il nome
 festaNameInput.addEventListener('input', () => {
   if (festaNameInput.value.trim()) {
@@ -304,8 +318,13 @@ function showFieldError(selector, message){
 function clearFieldError(selector){
   const field = document.querySelector(selector);
   if(!field) return;
-  field.classList.remove('error');
-  if (field.type === 'file') field.parentElement.classList.remove('error');
+
+  if (field.type === 'file') {
+    field.parentElement.classList.remove('error');
+  } else {
+    field.classList.remove('error');
+  }
+
   const row = field.closest('.form-row');
   const msg = row?.querySelector('.error-msg');
   if (msg) msg.remove();

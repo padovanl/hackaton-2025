@@ -482,3 +482,210 @@ input:invalid, .file-drop.error {
   border-color: var(--red);
   box-shadow: 0 0 0 3px rgba(237,28,36,0.1);
 }
+
+.radios {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.radios label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--fg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.radios label:hover {
+  border-color: color-mix(in srgb, var(--red) 30%, var(--border));
+  box-shadow: 0 0 0 3px rgba(237,28,36,0.08);
+}
+
+.radios input[type="radio"] {
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* stato attivo */
+.radios input[type="radio"]:checked + span,
+.radios input[type="radio"]:checked ~ span,
+.radios input[type="radio"]:checked + label,
+.radios label:has(input[type="radio"]:checked) {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red-dark);
+  box-shadow: 0 0 0 3px rgba(237,28,36,0.2);
+  transform: scale(1.02);
+}
+
+.radios label:active {
+  transform: scale(0.98);
+}
+
+select {
+  appearance: none; /* rimuove la freccia di default */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #fff;
+  color: var(--fg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 40px 10px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--red) 50%),
+    linear-gradient(135deg, var(--red) 50%, transparent 50%);
+  background-position:
+    calc(100% - 24px) calc(50% - 4px),
+    calc(100% - 16px) calc(50% - 4px);
+  background-size: 8px 8px, 8px 8px;
+  background-repeat: no-repeat;
+}
+
+select {
+  border-radius: 999px;
+  font-weight: 600;
+}
+/* hover + focus */
+select:hover {
+  border-color: color-mix(in srgb, var(--red) 30%, var(--border));
+  box-shadow: 0 0 0 3px rgba(237,28,36,0.08);
+}
+select:focus {
+  outline: none;
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(237,28,36,0.15);
+}
+
+/* disabilitato */
+select:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* ===============================
+   Modern text inputs / textarea
+=============================== */
+input[type="text"],
+textarea {
+  width: 100%;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  line-height: 1.4;
+  font-family: inherit;
+  color: var(--fg);
+  background-color: #fff;
+  box-shadow: var(--shadow);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+input[type="text"]:hover,
+textarea:hover {
+  border-color: color-mix(in srgb, var(--red) 30%, var(--border));
+  box-shadow: 0 0 0 3px rgba(237,28,36,0.08);
+  transform: translateY(-1px);
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(237,28,36,0.15);
+  transform: scale(1.01);
+}
+
+/* Testo placeholder più tenue */
+input[type="text"]::placeholder,
+textarea::placeholder {
+  color: #aaa;
+  opacity: 0.9;
+}
+
+/* Disabilitato */
+input[type="text"]:disabled,
+textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Nessun resize per textarea */
+textarea {
+  resize: none;
+}
+
+input[type="text"],
+textarea {
+  border-radius: 999px;
+  padding: 10px 18px;
+}
+textarea {
+  border-radius: 16px; /* leggermente meno ovale per multiline */
+}
+
+/* ==============================
+   Required field indicator
+============================== */
+.required label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.required-mark {
+  color: var(--red);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  animation: none;
+}
+
+/* Effetto lampeggio per i campi mancanti */
+input.error,
+.file-drop.error {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(237,28,36,0.1);
+  animation: pulse-error 0.7s ease-in-out 0s 3;
+}
+
+@keyframes pulse-error {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(237,28,36,0.1); }
+  50% { box-shadow: 0 0 0 6px rgba(237,28,36,0.3); }
+}
+
+/* Quando l'utente inizia a scrivere, togli l'errore */
+input.error:focus,
+textarea.error:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(237,28,36,0.15);
+  animation: none;
+}
+input:not(.error),
+.file-drop:not(.error) {
+  animation: none !important;
+}

@@ -38,35 +38,21 @@ document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightb
 const scrollBtn = document.createElement('button');
 scrollBtn.className = 'scroll-top hidden';
 scrollBtn.setAttribute('aria-label', 'Scroll to top');
-// nice chevron icon
 scrollBtn.innerHTML = `
   <svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M6.7 14.7a1 1 0 0 1 0-1.4l4.6-4.6a1 1 0 0 1 1.4 0l4.6 4.6a1 1 0 1 1-1.4 1.4L12 10.41l-3.9 3.9a1 1 0 0 1-1.4 0z"/>
   </svg>
 `;
 document.body.appendChild(scrollBtn);
+
 scrollBtn.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// Show when header is not visible
-const headerEl = document.querySelector('.app-header');
-if (headerEl) {
-  const io = new IntersectionObserver(([entry]) => {
-    // if header is in view -> hide; otherwise show
-    const inView = entry.isIntersecting;
-    if (inView) scrollBtn.classList.add('hidden');
-    else scrollBtn.classList.remove('hidden');
-  }, { root: null, threshold: 0 });
-  io.observe(headerEl);
-}
-
-// Fallback: also toggle on scroll for older browsers / quick changes
+// mostra/nascondi il pulsante quando si scorre
 window.addEventListener('scroll', () => {
-  if (!headerEl) {
-    const nearTop = window.scrollY < 50;
-    scrollBtn.classList.toggle('hidden', nearTop);
-  }
+  const show = window.scrollY > 200;
+  scrollBtn.classList.toggle('hidden', !show);
 });
 
 function bindUploadPreview(inputId, previewId){

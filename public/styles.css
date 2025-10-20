@@ -22,13 +22,46 @@ body{
   background:var(--bg);
 }
 
-.app-header, .app-footer{
-  background:linear-gradient(90deg, var(--red), #ff3a3a);
-  color:#fff;
-  padding:16px 20px;
+.app-header, .app-footer {
+  color: #fff;
+  padding: 16px 20px;
+  z-index: 1000;
 }
-.app-header h1{ margin:0; font-size:22px; }
-.app-footer{ font-size:13px; text-align:center; }
+
+/* Header fisso con effetto blur elegante */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(237, 28, 36, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  padding: 10px 20px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* Footer fisso in basso */
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(90deg, var(--red), #ff3a3a);
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
+}
 
 .container{
   max-width:1050px;
@@ -297,8 +330,9 @@ textarea{ resize:vertical; }
   font-size:13px;
   box-shadow:0 -4px 12px rgba(0,0,0,.1);
 }
-body{
-  padding-bottom:60px; /* spazio per non coprire i contenuti */
+body {
+  padding-top: 72px;  /* altezza header */
+  padding-bottom: 60px; /* altezza footer */
 }
 
 /* Scroll to top floating button */

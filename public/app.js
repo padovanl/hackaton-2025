@@ -35,6 +35,7 @@ function closeLightbox(){
 lightbox?.addEventListener('click', closeLightbox);
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
 
+// upload preview
 function bindUploadPreview(inputId, previewId){
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
@@ -52,6 +53,12 @@ function radioValue(name){
   const el = document.querySelector(`input[name="${name}"]:checked`);
   return el ? el.value : '';
 }
+
+// funzione di attesa random 10–20s
+const waitRandom = async () => {
+  const ms = 10000 + Math.random() * 10000;
+  return new Promise(r => setTimeout(r, ms));
+};
 
 function buildRow(categoryKey, label, images){
   const row = document.createElement('div');
@@ -125,26 +132,27 @@ async function regenerateImage(cardEl, categoryKey){
   const currentSrc = img.getAttribute('src').replace(location.origin, '');
 
   try {
-    // escludi SOLO l'immagine corrente per ottenere una nuova casuale diversa
     const exclude = [currentSrc];
     const res = await fetch('/api/regenerate', {
       method:'POST', headers:{ 'Content-Type':'application/json' },
       body: JSON.stringify({ category: categoryKey, exclude })
     });
     const data = await res.json();
+
+    // Simula caricamento lento 10–20s
+    await waitRandom();
+
     if (!data?.image) {
       alert('Non ci sono altre immagini disponibili in questa cartella.');
       return;
     }
-    if (data?.image) {
-      img.src = data.image;
-      const i = available[categoryKey].indexOf(currentSrc);
-      if (i >= 0) available[categoryKey][i] = data.image;
-    }
+    img.src = data.image;
+    const i = available[categoryKey].indexOf(currentSrc);
+    if (i >= 0) available[categoryKey][i] = data.image;
   } catch (e) {
     console.error(e); alert('Errore durante la rigenerazione');
   } finally {
-    setTimeout(() => cardEl.classList.remove('loading'), 250);
+    cardEl.classList.remove('loading');
   }
 }
 
@@ -178,6 +186,7 @@ function refreshDownloadButton(){
 async function generate(){
   generateBtn.disabled = true;
   generateBtn.textContent = 'Generazione in corso...';
+  generateBtn.classList.add('is-loading');
 
   const payload = {
     festaName: festaNameInput.value.trim(),
@@ -192,6 +201,9 @@ async function generate(){
       body: JSON.stringify(payload)
     });
     const data = await res.json();
+
+    // Simula attesa 10–20 s
+    await waitRandom();
 
     available = {
       logo: data.images.logo || [],
@@ -217,6 +229,7 @@ async function generate(){
     console.error(e); alert('Errore durante la generazione');
   } finally {
     generateBtn.disabled = false;
+    generateBtn.classList.remove('is-loading');
     generateBtn.textContent = 'OK, genera (simulato)';
   }
 }

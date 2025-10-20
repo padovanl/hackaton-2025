@@ -93,7 +93,12 @@ input[type="text"], textarea, select {
   outline:none;
   font-size:14px;
 }
-textarea{ resize:vertical; }
+textarea {
+  resize: none;
+  min-height: 60px;
+  max-height: 120px;
+  line-height: 1.4;
+}
 .thumb{
   width:100%; height:120px; border:1px dashed var(--border);
   border-radius:12px; display:flex; align-items:center; justify-content:center;
@@ -385,4 +390,42 @@ body {
   50%  { box-shadow: 0 0 0 0 rgba(237,28,36,0.4); }
   75%  { box-shadow: 0 0 0 6px rgba(237,28,36,0); }
   100% { box-shadow: none; }
+}
+
+/* --- Custom color picker swatch --- */
+.swatch.custom-picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: repeating-conic-gradient(
+    #ccc 0% 25%, transparent 0% 50%
+  ) 50% / 10px 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.swatch.custom-picker .color-input {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: none;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 0;
+}
+
+.swatch.custom-picker .color-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+.swatch.custom-picker .color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 12px;
+}
+
+/* optional glow when selected */
+.swatch.custom-picker.selected {
+  outline: 3px solid var(--red);
+  box-shadow: 0 0 10px rgba(237, 28, 36, 0.3);
 }

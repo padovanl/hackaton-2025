@@ -190,24 +190,52 @@ async function regenerateImage(cardEl, categoryKey){
 function renderColors(colorsArr){
   const wrap = $('#colorSwatches');
   wrap.innerHTML = '';
+
   colorsArr.forEach(hex => {
     const sw = document.createElement('div');
     sw.className = 'swatch';
     sw.style.background = hex;
     sw.title = hex;
+
     const cap = document.createElement('div');
     cap.className = 'hex';
     cap.textContent = hex.toUpperCase();
     sw.appendChild(cap);
+
     sw.addEventListener('click', () => {
       selectedColor = hex;
       [...wrap.children].forEach(c => c.classList.remove('selected'));
       sw.classList.add('selected');
       refreshDownloadButton();
     });
+
     wrap.appendChild(sw);
   });
-  scrollToBottom();
+
+  // === Custom color picker ===
+  const customWrap = document.createElement('div');
+  customWrap.className = 'swatch custom-picker';
+  customWrap.title = 'Choose custom color';
+
+  const colorInput = document.createElement('input');
+  colorInput.type = 'color';
+  colorInput.value = '#ed1c24'; // default red
+  colorInput.className = 'color-input';
+
+  const label = document.createElement('div');
+  label.className = 'hex';
+  label.textContent = 'Custom';
+
+  colorInput.addEventListener('input', () => {
+    selectedColor = colorInput.value;
+    [...wrap.children].forEach(c => c.classList.remove('selected'));
+    customWrap.classList.add('selected');
+    refreshDownloadButton();
+  });
+
+  customWrap.appendChild(colorInput);
+  customWrap.appendChild(label);
+  wrap.appendChild(customWrap);
 }
 
 function refreshDownloadButton(){

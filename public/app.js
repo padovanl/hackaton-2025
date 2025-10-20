@@ -21,6 +21,20 @@ const CATS = [
   { key:'touchBg', label:'Background Touch' }
 ];
 
+// Lightbox
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+function openLightbox(src){
+  lightboxImg.src = src;
+  lightbox.classList.remove('hidden');
+}
+function closeLightbox(){
+  lightbox.classList.add('hidden');
+  lightboxImg.src = '';
+}
+lightbox?.addEventListener('click', closeLightbox);
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
+
 function bindUploadPreview(inputId, previewId){
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
@@ -59,6 +73,7 @@ function buildRow(categoryKey, label, images){
     const img = document.createElement('img');
     img.src = src;
     img.alt = `${label} ${idx+1}`;
+    img.addEventListener('click', () => openLightbox(img.src));
 
     const badge = document.createElement('div');
     badge.className = 'badge';
@@ -110,12 +125,17 @@ async function regenerateImage(cardEl, categoryKey){
   const currentSrc = img.getAttribute('src').replace(location.origin, '');
 
   try {
-    const exclude = available[categoryKey];
+    // escludi SOLO l'immagine corrente per ottenere una nuova casuale diversa
+    const exclude = [currentSrc];
     const res = await fetch('/api/regenerate', {
       method:'POST', headers:{ 'Content-Type':'application/json' },
       body: JSON.stringify({ category: categoryKey, exclude })
     });
     const data = await res.json();
+    if (!data?.image) {
+      alert('Non ci sono altre immagini disponibili in questa cartella.');
+      return;
+    }
     if (data?.image) {
       img.src = data.image;
       const i = available[categoryKey].indexOf(currentSrc);

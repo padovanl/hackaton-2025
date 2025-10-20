@@ -132,6 +132,9 @@ function buildRow(categoryKey, label, images){
     radio.value = src;
     radio.addEventListener('change', () => {
       selected[categoryKey] = radio.value;
+      // evidenzia la card selezionata
+      [...grid.querySelectorAll('.card-img')].forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
       refreshDownloadButton();
     });
     const sTxt = document.createElement('span');

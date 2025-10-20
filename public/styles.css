@@ -334,3 +334,9 @@ body{
   height: 22px;
   fill: currentColor;
 }
+
+.card-img.selected {
+  outline: 4px solid var(--red);
+  outline-offset: -4px;
+  box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.3);
+}

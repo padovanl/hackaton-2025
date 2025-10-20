@@ -55,6 +55,9 @@ window.addEventListener('scroll', () => {
   scrollBtn.classList.toggle('hidden', !show);
 });
 
+/* --------------------------
+   Upload preview + cleanup error
+--------------------------- */
 function bindUploadPreview(inputId, previewId, textId){
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
@@ -62,6 +65,10 @@ function bindUploadPreview(inputId, previewId, textId){
 
   input.addEventListener('change', () => {
     const f = input.files?.[0];
+    // pulizia errori se presenti
+    clearFieldError('#' + inputId);
+    input.parentElement.classList.remove('error');
+
     if(!f){
       preview.innerHTML = '';
       text.textContent = 'Choose image';
@@ -79,12 +86,22 @@ function bindUploadPreview(inputId, previewId, textId){
 bindUploadPreview('logoUpload','logoPreview','logoText');
 bindUploadPreview('logoHUpload','logoHPreview','logoHText');
 
+// pulisci errori mentre si digita il nome
+festaNameInput.addEventListener('input', () => {
+  if (festaNameInput.value.trim()) {
+    clearFieldError('#festaName');
+  }
+});
+
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 function scrollToBottom(){
   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
+/* --------------------------
+   UI rows
+--------------------------- */
 function buildRow(categoryKey, label, images){
   const row = document.createElement('div');
   row.className = 'row';
@@ -168,6 +185,9 @@ function buildRow(categoryKey, label, images){
   return row;
 }
 
+/* --------------------------
+   Regenerate (with 2s flash)
+--------------------------- */
 async function regenerateImage(cardEl, categoryKey){
   cardEl.classList.add('loading');
   const img = cardEl.querySelector('img');
@@ -194,10 +214,13 @@ async function regenerateImage(cardEl, categoryKey){
   } finally {
     cardEl.classList.remove('loading');
     cardEl.classList.add('regenerated');
-    setTimeout(() => cardEl.classList.remove('regenerated'), 1500);
+    setTimeout(() => cardEl.classList.remove('regenerated'), 2000); // 2s flash
   }
 }
 
+/* --------------------------
+   Colors (with custom picker)
+--------------------------- */
 function renderColors(colorsArr){
   const wrap = $('#colorSwatches');
   wrap.innerHTML = '';
@@ -247,6 +270,8 @@ function renderColors(colorsArr){
   customWrap.appendChild(colorInput);
   customWrap.appendChild(label);
   wrap.appendChild(customWrap);
+
+  scrollToBottom();
 }
 
 function refreshDownloadButton(){
@@ -254,7 +279,67 @@ function refreshDownloadButton(){
   downloadBtn.disabled = !(allPicked && selectedColor);
 }
 
+/* --------------------------
+   Validation helpers
+--------------------------- */
+function showFieldError(selector, message){
+  const field = document.querySelector(selector);
+  if(!field) return;
+  // evita duplicati
+  if (field.closest('.form-row')?.querySelector('.error-msg')) return;
+
+  const msg = document.createElement('div');
+  msg.className = 'error-msg';
+  msg.textContent = message;
+  field.closest('.form-row')?.appendChild(msg);
+
+  // evidenzia file-drop o input
+  if (field.type === 'file') {
+    field.parentElement.classList.add('error');
+  } else {
+    field.classList.add('error');
+  }
+}
+
+function clearFieldError(selector){
+  const field = document.querySelector(selector);
+  if(!field) return;
+  field.classList.remove('error');
+  if (field.type === 'file') field.parentElement.classList.remove('error');
+  const row = field.closest('.form-row');
+  const msg = row?.querySelector('.error-msg');
+  if (msg) msg.remove();
+}
+
+/* --------------------------
+   Generate (progressive build + required fields)
+--------------------------- */
 async function generate(){
+  // --- VALIDAZIONE ---
+  // pulisci errori precedenti
+  document.querySelectorAll('.error-msg').forEach(e => e.remove());
+  document.querySelectorAll('.error').forEach(e => e.classList.remove('error'));
+
+  const logoFile = document.getElementById('logoUpload').files?.[0];
+  const logoHFile = document.getElementById('logoHUpload').files?.[0];
+  const festaName = festaNameInput.value.trim();
+
+  let valid = true;
+  if(!logoFile){
+    showFieldError('#logoUpload', 'Logo is required');
+    valid = false;
+  }
+  if(!logoHFile){
+    showFieldError('#logoHUpload', 'Horizontal logo is required');
+    valid = false;
+  }
+  if(!festaName){
+    showFieldError('#festaName', 'Holiday name is required');
+    valid = false;
+  }
+  if(!valid) return; // fermati qui
+
+  // --- SE TUTTO OK, procedi ---
   generateBtn.disabled = true;
   generateBtn.textContent = 'Generating...';
   generateBtn.classList.add('is-loading');
@@ -272,7 +357,7 @@ async function generate(){
   if (colorSwatches) colorSwatches.innerHTML = '';
 
   const payload = {
-    festaName: festaNameInput.value.trim(),
+    festaName: festaName,
     description: descriptionInput.value.trim(),
     style: styleSelect.value,
     variant: (document.querySelector('input[name="variant"]:checked')||{}).value
@@ -312,6 +397,9 @@ async function generate(){
   }
 }
 
+/* --------------------------
+   ZIP
+--------------------------- */
 async function downloadZip(){
   const payload = {
     selections: { ...selected },

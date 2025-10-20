@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Generatore Festività (simulato)</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>🎉 Generatore Festività</h1>
+  </header>
+
+  <main class="container">
+    <section class="card form-card">
+      <h2>Impostazioni</h2>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Logo (upload)</label>
+          <input type="file" id="logoUpload" accept="image/*" />
+          <div class="thumb" id="logoPreview"></div>
+        </div>
+
+        <div class="form-row">
+          <label>Logo orizzontale (upload)</label>
+          <input type="file" id="logoHUpload" accept="image/*" />
+          <div class="thumb" id="logoHPreview"></div>
+        </div>
+
+        <div class="form-row">
+          <label>Nome festività</label>
+          <input type="text" id="festaName" placeholder="Es: Natale Tech 2025" />
+        </div>
+
+        <div class="form-row">
+          <label>Descrizione (opzionale)</label>
+          <textarea id="description" rows="2" placeholder="Breve descrizione..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <label>Stile disegno</label>
+          <select id="style">
+            <option value="illustrativo">Illustrativo</option>
+            <option value="cartoon">Cartoon</option>
+            <option value="scify">Scify</option>
+            <option value="western">Western</option>
+            <option value="realistico">Realistico</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Variante</label>
+          <div class="radios">
+            <label><input type="radio" name="variant" value="minimal" checked /> Minimal</label>
+            <label><input type="radio" name="variant" value="illustrativo" /> Illustrativo</label>
+          </div>
+        </div>
+      </div>
+
+      <button id="generateBtn" class="btn btn-primary">OK, genera (simulato)</button>
+    </section>
+
+    <section id="results" class="hidden">
+      <div class="section-header">
+        <h2>Risultati</h2>
+        <div class="hint">Clicca la <b>❌</b> su un’immagine per rigenerarla.</div>
+      </div>
+
+      <div id="rows"></div>
+
+      <div class="colors">
+        <h3>Colori proposti</h3>
+        <div id="colorSwatches" class="swatches"></div>
+      </div>
+
+      <div class="actions">
+        <button id="downloadBtn" class="btn btn-accent" disabled>Scarica ZIP selezionati</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>© Generatore Festività • rosso & bianco</span>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

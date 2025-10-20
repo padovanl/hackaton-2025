@@ -300,3 +300,37 @@ textarea{ resize:vertical; }
 body{
   padding-bottom:60px; /* spazio per non coprire i contenuti */
 }
+
+/* Scroll to top floating button */
+.scroll-top {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 14px rgba(0,0,0,.22);
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease, opacity .2s ease;
+  z-index: 999;
+}
+.scroll-top:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,.28);
+  background: var(--red-dark);
+}
+.scroll-top.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px) scale(.96);
+}
+.scroll-top svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}

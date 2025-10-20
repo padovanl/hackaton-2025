@@ -21,7 +21,6 @@ const CATS = [
   { key:'touchBg', label:'Touch background' }
 ];
 
-// Lightbox
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 function openLightbox(src){
@@ -35,7 +34,41 @@ function closeLightbox(){
 lightbox?.addEventListener('click', closeLightbox);
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
 
-// upload preview
+// Scroll to top button logic
+const scrollBtn = document.createElement('button');
+scrollBtn.className = 'scroll-top hidden';
+scrollBtn.setAttribute('aria-label', 'Scroll to top');
+// nice chevron icon
+scrollBtn.innerHTML = `
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M6.7 14.7a1 1 0 0 1 0-1.4l4.6-4.6a1 1 0 0 1 1.4 0l4.6 4.6a1 1 0 1 1-1.4 1.4L12 10.41l-3.9 3.9a1 1 0 0 1-1.4 0z"/>
+  </svg>
+`;
+document.body.appendChild(scrollBtn);
+scrollBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Show when header is not visible
+const headerEl = document.querySelector('.app-header');
+if (headerEl) {
+  const io = new IntersectionObserver(([entry]) => {
+    // if header is in view -> hide; otherwise show
+    const inView = entry.isIntersecting;
+    if (inView) scrollBtn.classList.add('hidden');
+    else scrollBtn.classList.remove('hidden');
+  }, { root: null, threshold: 0 });
+  io.observe(headerEl);
+}
+
+// Fallback: also toggle on scroll for older browsers / quick changes
+window.addEventListener('scroll', () => {
+  if (!headerEl) {
+    const nearTop = window.scrollY < 50;
+    scrollBtn.classList.toggle('hidden', nearTop);
+  }
+});
+
 function bindUploadPreview(inputId, previewId){
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
@@ -49,12 +82,11 @@ function bindUploadPreview(inputId, previewId){
 bindUploadPreview('logoUpload','logoPreview');
 bindUploadPreview('logoHUpload','logoHPreview');
 
-function radioValue(name){
-  const el = document.querySelector(`input[name="${name}"]:checked`);
-  return el ? el.value : '';
-}
-
 const wait = ms => new Promise(r => setTimeout(r, ms));
+
+function scrollToBottom(){
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
 
 function buildRow(categoryKey, label, images){
   const row = document.createElement('div');
@@ -79,6 +111,7 @@ function buildRow(categoryKey, label, images){
     badge.textContent = `#${idx+1}`;
     grid.appendChild(card);
 
+    scrollToBottom();
     await wait(5000); // 5s per image
 
     const img = document.createElement('img');
@@ -121,6 +154,8 @@ function buildRow(categoryKey, label, images){
     card.appendChild(badge);
     card.appendChild(x);
     card.appendChild(selector);
+
+    scrollToBottom();
   });
 
   return row;
@@ -139,8 +174,7 @@ async function regenerateImage(cardEl, categoryKey){
     });
     const data = await res.json();
 
-    await wait(5000); // 5s per image
-
+    await wait(5000);
     if (!data?.image) {
       alert('No more images available in this folder.');
       return;
@@ -175,6 +209,7 @@ function renderColors(colorsArr){
     });
     wrap.appendChild(sw);
   });
+  scrollToBottom();
 }
 
 function refreshDownloadButton(){
@@ -191,11 +226,9 @@ async function generate(){
   rowsContainer.innerHTML = '';
   resultsSection.classList.remove('hidden');
 
-  // reset selections
   selected = { logo:null, logoHorizontal:null, gridBg:null, touchBg:null };
   selectedColor = null;
 
-  // hide and clear colors until the end
   const colorsSection = $('#colorsSection');
   const colorSwatches = $('#colorSwatches');
   if (colorsSection) colorsSection.classList.add('hidden');
@@ -221,22 +254,18 @@ async function generate(){
       gridBg: data.images.gridBg || [],
       touchBg: data.images.touchBg || []
     };
-
     colors = data.colors || [];
 
-    // progressive rows
     for (const cat of CATS){
       const row = buildRow(cat.key, cat.label, available[cat.key]);
       rowsContainer.appendChild(row);
-      await wait(5000 * (available[cat.key]?.length || 1)); // 5s per image
+      scrollToBottom();
+      await wait(5000 * (available[cat.key]?.length || 1));
     }
 
-    // finally show colors
     renderColors(colors);
     if (colorsSection) colorsSection.classList.remove('hidden');
-
     refreshDownloadButton();
-
   } catch(e){
     console.error(e); alert('Error while generating');
   } finally {

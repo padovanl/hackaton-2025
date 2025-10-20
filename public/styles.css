@@ -271,7 +271,7 @@ textarea{ resize:vertical; }
 
 /* Overlay caricamento su card */
 .card-img.loading::after{
-  content:"⏳ Generazione...";
+  content:"⏳ Generating...";
   position:absolute;
   inset:0;
   background:rgba(255,255,255,.85);

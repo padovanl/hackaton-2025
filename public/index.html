@@ -1,19 +1,19 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Generatore Festività (simulato)</title>
+  <title>QAMF Hackaton 2025 - PinPals</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
   <header class="app-header">
-    <h1>🎉 Generatore Festività</h1>
+    <h1>QAMF Hackaton 2025 - PinPals</h1>
   </header>
 
   <main class="container">
     <section class="card form-card">
-      <h2>Impostazioni</h2>
+      <h2>Settings</h2>
 
       <div class="form-grid">
         <div class="form-row">
@@ -23,61 +23,61 @@
         </div>
 
         <div class="form-row">
-          <label>Logo orizzontale (upload)</label>
+          <label>Horizontal logo (upload)</label>
           <input type="file" id="logoHUpload" accept="image/*" />
           <div class="thumb" id="logoHPreview"></div>
         </div>
 
         <div class="form-row">
-          <label>Nome festività</label>
-          <input type="text" id="festaName" placeholder="Es: Natale Tech 2025" />
+          <label>Holiday name</label>
+          <input type="text" id="festaName" placeholder="e.g., Tech Christmas 2025" />
         </div>
 
         <div class="form-row">
-          <label>Descrizione (opzionale)</label>
-          <textarea id="description" rows="2" placeholder="Breve descrizione..."></textarea>
+          <label>Description (optional)</label>
+          <textarea id="description" rows="2" placeholder="Short description..."></textarea>
         </div>
 
         <div class="form-row">
-          <label>Stile disegno</label>
+          <label>Drawing style</label>
           <select id="style">
-            <option value="illustrativo">Illustrativo</option>
+            <option value="illustrativo">Illustrative</option>
             <option value="cartoon">Cartoon</option>
-            <option value="scify">Scify</option>
+            <option value="scify">Sci-fi</option>
             <option value="western">Western</option>
-            <option value="realistico">Realistico</option>
+            <option value="realistico">Realistic</option>
           </select>
         </div>
 
         <div class="form-row">
-          <label>Variante</label>
+          <label>Variant</label>
           <div class="radios">
             <label><input type="radio" name="variant" value="minimal" checked /> Minimal</label>
-            <label><input type="radio" name="variant" value="illustrativo" /> Illustrativo</label>
+            <label><input type="radio" name="variant" value="illustrativo" /> Illustrative</label>
           </div>
         </div>
       </div>
 
       <div style="margin-top: 20px;">
-        <button id="generateBtn" class="btn btn-primary btn-lg">OK, genera (simulato)</button>
+        <button id="generateBtn" class="btn btn-primary btn-lg">OK, generate (simulated)</button>
       </div>
     </section>
 
     <section id="results" class="hidden">
       <div class="section-header">
-        <h2>Risultati</h2>
-        <div class="hint">⏳ Ogni immagine richiede qualche secondo per essere generata. Clicca la <b>❌</b> per rigenerare o l’immagine per ingrandirla.</div>
+        <h2>Results</h2>
+        <div class="hint">⏳ Each image takes ~5 seconds. Click <b>❌</b> to regenerate, or click the image to zoom.</div>
       </div>
 
       <div id="rows"></div>
 
-      <div class="colors">
-        <h3>Colori proposti</h3>
+      <div id="colorsSection" class="colors hidden">
+        <h3>Suggested colors</h3>
         <div id="colorSwatches" class="swatches"></div>
       </div>
 
       <div class="actions" style="margin-top: 24px;">
-        <button id="downloadBtn" class="btn btn-outline btn-lg" disabled>📦 Scarica ZIP selezionati</button>
+        <button id="downloadBtn" class="btn btn-outline btn-lg" disabled>📦 Download selected ZIP</button>
       </div>
     </section>
   </main>
@@ -87,7 +87,7 @@
   </footer>
 
   <div id="lightbox" class="lightbox hidden">
-    <img id="lightboxImg" alt="preview ingrandita" />
+    <img id="lightboxImg" alt="zoomed preview" />
   </div>
 
   <script src="/app.js"></script>

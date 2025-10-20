@@ -16,9 +16,9 @@ let selectedColor = null;
 
 const CATS = [
   { key:'logo', label:'Logo' },
-  { key:'logoHorizontal', label:'Logo Orizzontale' },
-  { key:'gridBg', label:'Background Griglie' },
-  { key:'touchBg', label:'Background Touch' }
+  { key:'logoHorizontal', label:'Horizontal logo' },
+  { key:'gridBg', label:'Grid background' },
+  { key:'touchBg', label:'Touch background' }
 ];
 
 // Lightbox
@@ -35,6 +35,7 @@ function closeLightbox(){
 lightbox?.addEventListener('click', closeLightbox);
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
 
+// upload preview
 function bindUploadPreview(inputId, previewId){
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
@@ -69,7 +70,7 @@ function buildRow(categoryKey, label, images){
   grid.className = 'grid';
   row.appendChild(grid);
 
-  // Aggiungi le immagini con effetto progressivo
+  // progressive reveal
   images.forEach(async (src, idx) => {
     const card = document.createElement('div');
     card.className = 'card-img loading';
@@ -78,8 +79,7 @@ function buildRow(categoryKey, label, images){
     badge.textContent = `#${idx+1}`;
     grid.appendChild(card);
 
-    // Aspetta 5 secondi prima di mostrare
-    await wait(5000);
+    await wait(5000); // 5s per image
 
     const img = document.createElement('img');
     img.src = src;
@@ -89,7 +89,7 @@ function buildRow(categoryKey, label, images){
     const x = document.createElement('div');
     x.className = 'btn-x';
     x.textContent = '❌';
-    x.title = 'Rigenera questa immagine';
+    x.title = 'Regenerate this image';
 
     const selector = document.createElement('label');
     selector.className = 'selector';
@@ -102,7 +102,7 @@ function buildRow(categoryKey, label, images){
       refreshDownloadButton();
     });
     const sTxt = document.createElement('span');
-    sTxt.textContent = 'Scegli';
+    sTxt.textContent = 'Select';
     selector.appendChild(radio);
     selector.appendChild(sTxt);
 
@@ -139,17 +139,17 @@ async function regenerateImage(cardEl, categoryKey){
     });
     const data = await res.json();
 
-    await wait(5000); // 5 secondi di simulazione
+    await wait(5000); // 5s per image
 
     if (!data?.image) {
-      alert('Non ci sono altre immagini disponibili in questa cartella.');
+      alert('No more images available in this folder.');
       return;
     }
     img.src = data.image;
     const i = available[categoryKey].indexOf(currentSrc);
     if (i >= 0) available[categoryKey][i] = data.image;
   } catch (e) {
-    console.error(e); alert('Errore durante la rigenerazione');
+    console.error(e); alert('Error while regenerating');
   } finally {
     cardEl.classList.remove('loading');
   }
@@ -184,10 +184,22 @@ function refreshDownloadButton(){
 
 async function generate(){
   generateBtn.disabled = true;
-  generateBtn.textContent = 'Generazione in corso...';
+  generateBtn.textContent = 'Generating...';
   generateBtn.classList.add('is-loading');
+
+  // reset UI
   rowsContainer.innerHTML = '';
   resultsSection.classList.remove('hidden');
+
+  // reset selections
+  selected = { logo:null, logoHorizontal:null, gridBg:null, touchBg:null };
+  selectedColor = null;
+
+  // hide and clear colors until the end
+  const colorsSection = $('#colorsSection');
+  const colorSwatches = $('#colorSwatches');
+  if (colorsSection) colorsSection.classList.add('hidden');
+  if (colorSwatches) colorSwatches.innerHTML = '';
 
   const payload = {
     festaName: festaNameInput.value.trim(),
@@ -210,26 +222,27 @@ async function generate(){
       touchBg: data.images.touchBg || []
     };
 
-    selected = { logo:null, logoHorizontal:null, gridBg:null, touchBg:null };
-    selectedColor = null;
     colors = data.colors || [];
 
-    // Popola progressivamente le righe
+    // progressive rows
     for (const cat of CATS){
       const row = buildRow(cat.key, cat.label, available[cat.key]);
       rowsContainer.appendChild(row);
-      await wait(5000 * (available[cat.key]?.length || 1)); // ogni immagine 5s
+      await wait(5000 * (available[cat.key]?.length || 1)); // 5s per image
     }
 
+    // finally show colors
     renderColors(colors);
+    if (colorsSection) colorsSection.classList.remove('hidden');
+
     refreshDownloadButton();
 
   } catch(e){
-    console.error(e); alert('Errore durante la generazione');
+    console.error(e); alert('Error while generating');
   } finally {
     generateBtn.disabled = false;
     generateBtn.classList.remove('is-loading');
-    generateBtn.textContent = 'OK, genera (simulato)';
+    generateBtn.textContent = 'OK, generate (simulated)';
   }
 }
 
@@ -260,7 +273,7 @@ async function downloadZip(){
     a.click(); a.remove();
     URL.revokeObjectURL(url);
   } catch(e){
-    console.error(e); alert('Errore durante lo scaricamento ZIP');
+    console.error(e); alert('Error while downloading ZIP');
   }
 }
 

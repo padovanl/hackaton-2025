@@ -58,13 +58,15 @@
         </div>
       </div>
 
-      <button id="generateBtn" class="btn btn-primary">OK, genera (simulato)</button>
+      <div style="margin-top: 20px;">
+        <button id="generateBtn" class="btn btn-primary btn-lg">OK, genera (simulato)</button>
+      </div>
     </section>
 
     <section id="results" class="hidden">
       <div class="section-header">
         <h2>Risultati</h2>
-        <div class="hint">Clicca la <b>❌</b> su un’immagine per rigenerarla.</div>
+        <div class="hint">Clicca la <b>❌</b> su un’immagine per rigenerarla o clicca l’immagine per ingrandirla.</div>
       </div>
 
       <div id="rows"></div>
@@ -74,8 +76,8 @@
         <div id="colorSwatches" class="swatches"></div>
       </div>
 
-      <div class="actions">
-        <button id="downloadBtn" class="btn btn-accent" disabled>Scarica ZIP selezionati</button>
+      <div class="actions" style="margin-top: 24px;">
+        <button id="downloadBtn" class="btn btn-outline btn-lg" disabled>📦 Scarica ZIP selezionati</button>
       </div>
     </section>
   </main>
@@ -83,6 +85,7 @@
   <footer class="app-footer">
     <span>© Copyright PinPals</span>
   </footer>
+
   <div id="lightbox" class="lightbox hidden">
     <img id="lightboxImg" alt="preview ingrandita" />
   </div>

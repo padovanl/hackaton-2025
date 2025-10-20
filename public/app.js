@@ -143,13 +143,20 @@ function buildRow(categoryKey, label, images){
     selector.appendChild(sTxt);
 
     x.addEventListener('click', async () => {
+      const wasSelected = selected[categoryKey] === radio.value;
       await regenerateImage(card, categoryKey);
-      const currentSelected = selected[categoryKey];
+
       const newSrc = card.querySelector('img').src.replace(location.origin, '');
-      if (currentSelected === src) {
-        selected[categoryKey] = newSrc;
-      }
       radio.value = newSrc;
+
+      // Se l'immagine era selezionata prima della rigenerazione
+      if (wasSelected) {
+        // rimuovi selezione visiva e logica
+        selected[categoryKey] = null;
+        card.classList.remove('selected');
+        radio.checked = false;
+        refreshDownloadButton();
+      }
     });
 
     card.classList.remove('loading');
@@ -189,6 +196,8 @@ async function regenerateImage(cardEl, categoryKey){
     console.error(e); alert('Error while regenerating');
   } finally {
     cardEl.classList.remove('loading');
+    cardEl.classList.add('regenerated');
+    setTimeout(() => cardEl.classList.remove('regenerated'), 1500);
   }
 }
 
@@ -274,7 +283,7 @@ async function generate(){
   } finally {
     generateBtn.disabled = false;
     generateBtn.classList.remove('is-loading');
-    generateBtn.textContent = 'OK, generate (simulated)';
+    generateBtn.textContent = 'OK, generate';
   }
 }
 

@@ -9,16 +9,19 @@ const festaNameInput = $('#festaName');
 const descriptionInput = $('#description');
 const styleSelect = $('#style');
 
-let selected = { logo: null, logoHorizontal: null, gridBg: null, touchBg: null };
-let available = { logo: [], logoHorizontal: [], gridBg: [], touchBg: [] };
+// ✅ AGGIUNTO: includiamo anche "welcome" tra i selezionabili
+let selected = { logo: null, logoHorizontal: null, gridBg: null, touchBg: null, welcome: null };
+let available = { logo: [], logoHorizontal: [], gridBg: [], touchBg: [], welcome: [] };
 let colors = [];
 let selectedColor = null;
 
+// ✅ AGGIUNTO: nuova categoria in fondo
 const CATS = [
-  { key:'logo', label:'Logo' },
+  { key:'logo',           label:'Logo' },
   { key:'logoHorizontal', label:'Horizontal logo' },
-  { key:'gridBg', label:'Grid background' },
-  { key:'touchBg', label:'Touch background' }
+  { key:'gridBg',         label:'Grid background' },
+  { key:'touchBg',        label:'Touch background' },
+  { key:'welcome',        label:'Welcome screens' } // <— NEW last row
 ];
 
 const lightbox = document.getElementById('lightbox');
@@ -85,6 +88,8 @@ function bindUploadPreview(inputId, previewId, textId){
 
 bindUploadPreview('logoUpload','logoPreview','logoText');
 bindUploadPreview('logoHUpload','logoHPreview','logoHText');
+
+// auto clear errore durante la digitazione sui required
 document.querySelectorAll('input[required]').forEach(el => {
   el.addEventListener('input', () => {
     if (el.value.trim() !== '') {
@@ -99,12 +104,6 @@ document.querySelectorAll('input[required]').forEach(el => {
       clearFieldError('#' + id);
     }
   });
-});
-// pulisci errori mentre si digita il nome
-festaNameInput.addEventListener('input', () => {
-  if (festaNameInput.value.trim()) {
-    clearFieldError('#festaName');
-  }
 });
 
 const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -272,7 +271,7 @@ function renderColors(colorsArr){
 
   const label = document.createElement('div');
   label.className = 'hex';
-  label.textContent = 'Custom';
+  label.textContent = '🎨';
 
   colorInput.addEventListener('input', () => {
     selectedColor = colorInput.value;
@@ -367,7 +366,8 @@ async function generate(){
   rowsContainer.innerHTML = '';
   resultsSection.classList.remove('hidden');
 
-  selected = { logo:null, logoHorizontal:null, gridBg:null, touchBg:null };
+  // ✅ Reset con "welcome" incluso
+  selected = { logo:null, logoHorizontal:null, gridBg:null, touchBg:null, welcome:null };
   selectedColor = null;
 
   const colorsSection = $('#colorsSection');
@@ -389,11 +389,13 @@ async function generate(){
     });
     const data = await res.json();
 
+    // ✅ Includi anche welcome se il backend lo restituisce
     available = {
-      logo: data.images.logo || [],
+      logo:           data.images.logo || [],
       logoHorizontal: data.images.logoHorizontal || [],
-      gridBg: data.images.gridBg || [],
-      touchBg: data.images.touchBg || []
+      gridBg:         data.images.gridBg || [],
+      touchBg:        data.images.touchBg || [],
+      welcome:        data.images.welcome || [] // <— NEW
     };
     colors = data.colors || [];
 

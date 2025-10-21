@@ -271,7 +271,7 @@ function renderColors(colorsArr){
 
   const label = document.createElement('div');
   label.className = 'hex';
-  label.textContent = '🎨';
+  label.textContent = 'Custom';
 
   colorInput.addEventListener('input', () => {
     selectedColor = colorInput.value;
